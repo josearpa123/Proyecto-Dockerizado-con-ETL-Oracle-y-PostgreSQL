@@ -1,0 +1,169 @@
+# Proyecto Dockerizado con Aplicaciones de Consulta, ETL y Base de Datos Oracle
+
+Este proyecto consta de varias aplicaciones dockerizadas que interactúan con una base de datos PostgreSQL primaria y su base de datos esclava. Además, hay un proceso ETL (Extract, Transform, Load) que toma los datos de PostgreSQL, los transforma y los carga en una base de datos Oracle. El proyecto está estructurado con múltiples contenedores Docker que gestionan los distintos componentes, incluyendo la base de datos, las aplicaciones de consulta y el proceso ETL.
+
+## Estructura del Proyecto
+
+El proyecto tiene la siguiente estructura de directorios:
+
+```
+.
+├── 00_init.sql                # Script de inicialización de la base de datos PostgreSQL
+├── 01_init_usuarios.sql       # Script de inicialización de usuarios en PostgreSQL
+├── app-generador              # Carpeta con la aplicación que genera datos en la base de datos PostgreSQL
+│   ├── app.py
+│   ├── build-image.sh
+│   ├── dependencias.sh
+│   ├── Dockerfile
+│   ├── requirements.txt
+│   └── run-image.sh
+├── app-generador-c++          # Carpeta con la versión C++ para generar datos
+│   ├── dockerfile
+│   └── main.cpp
+├── docker-compose.yml         # Archivo de configuración de Docker Compose
+├── python_app                 # Carpeta con el contenedor que maneja la inserción de datos en PostgreSQL
+│   ├── dockerfile
+│   ├── insert_data.py
+│   └── requirements.txt
+├── python_app_generator2      # Carpeta con otra versión de la aplicación generadora de datos
+│   ├── app.py
+│   └── dockerfile
+├── python_query_app           # Carpeta con la aplicación Flask para consultar la base de datos PostgreSQL
+│   ├── app.py
+│   ├── dockerfile
+│   ├── query_data.py
+│   ├── RE
+│   ├── requirements.txt
+│   └── templates
+│       └── index.html
+├── python_query_app2          # Otra aplicación Flask para consultas PostgreSQL
+│   ├── app.py
+│   ├── dockerfile
+│   ├── query_data.py
+│   ├── requirements.txt
+│   └── templates
+│       └── index.html
+├── etl                        # Carpeta con el proceso ETL que transforma y carga los datos a Oracle
+│   ├── etl_process.py
+│   ├── requirements.txt
+│   └── dockerfile
+├── oracle_db                  # Carpeta con la base de datos Oracle dockerizada
+│   ├── dockerfile
+│   └── init.sql
+└── README.md                  # Este archivo
+```
+
+### Descripción de los Servicios
+
+1. **postgres_primary**:
+   - Contenedor de PostgreSQL que actúa como base de datos principal.
+   - Configurado con un script de inicialización (`00_init.sql`) y un script adicional para la inicialización de usuarios (`01_init_usuarios.sql`).
+   - Expone el puerto `5433` para permitir conexiones externas.
+
+2. **postgres_replica**:
+   - Contenedor de PostgreSQL que replica los datos de la base de datos primaria (`postgres_primary`).
+   - Expone el puerto `5434` y se configura para hacer un `pg_basebackup` del contenedor primario.
+
+3. **python_app**:
+   - Una aplicación que inserta datos en la base de datos PostgreSQL.
+   - Depende de `postgres_primary` para ejecutar sus operaciones.
+
+4. **python_query_app**:
+   - Aplicación Flask que consulta la base de datos PostgreSQL y muestra los resultados en una página web.
+   - Expone el puerto `5000` y se puede acceder a él desde el navegador web local (`http://localhost:5000`).
+
+5. **python_query_app2**:
+   - Otra aplicación Flask que consulta la base de datos PostgreSQL, similar a la anterior.
+   - También expone el puerto `5001` y se puede acceder a él en el navegador web local (`http://localhost:5001`).
+
+6. **etl**:
+   - Contenedor encargado del proceso ETL (Extract, Transform, Load), que extrae los datos de PostgreSQL, los transforma según sea necesario, y los carga en una base de datos Oracle.
+   - Utiliza un archivo `etl_process.py` para manejar la lógica de transformación y carga.
+   - Se conecta a la base de datos Oracle utilizando las credenciales adecuadas.
+
+7. **oracle_db**:
+   - Contenedor que contiene una base de datos Oracle.
+   - Configurado con un archivo `init.sql` para inicializar la base de datos y configurarla adecuadamente.
+   - Expone el puerto `1521` para conexiones externas.
+
+## Requisitos Previos
+
+- Docker y Docker Compose deben estar instalados en tu máquina.
+  
+  Puedes descargar Docker desde [aquí](https://www.docker.com/get-started) y Docker Compose desde [aquí](https://docs.docker.com/compose/install/).
+
+## Configuración
+
+Antes de ejecutar los servicios, asegúrate de que tus variables de entorno están configuradas correctamente en los archivos `.env` o dentro del archivo `docker-compose.yml`. Las variables necesarias son:
+
+- `DATABASE_HOST`: La dirección del contenedor de la base de datos (por defecto, `postgres_primary`).
+- `DATABASE_NAME`: El nombre de la base de datos en PostgreSQL.
+- `DATABASE_USER`: El usuario de la base de datos en PostgreSQL.
+- `DATABASE_PASSWORD`: La contraseña de la base de datos en PostgreSQL.
+- `ORACLE_HOST`: La dirección del contenedor de la base de datos Oracle.
+- `ORACLE_USER`: El usuario de la base de datos Oracle.
+- `ORACLE_PASSWORD`: La contraseña de la base de datos Oracle.
+
+## Ejecución
+
+1. **Construir y levantar los contenedores**:
+   Ejecuta el siguiente comando en el directorio raíz del proyecto para construir las imágenes y levantar los contenedores con Docker Compose:
+
+   ```bash
+   docker-compose up --build
+   ```
+
+   Esto descargará las imágenes necesarias, construirá los contenedores y los pondrá en marcha.
+
+2. **Acceder a la aplicación de consultas**:
+   Una vez que los contenedores estén corriendo, abre tu navegador y ve a:
+
+   ```
+   http://localhost:5000
+   ```
+
+   Esto te mostrará los resultados de las consultas realizadas a la base de datos PostgreSQL.
+
+3. **Ver logs de la aplicación de consultas**:
+   Si deseas ver los logs de la aplicación Flask mientras está corriendo, puedes utilizar el siguiente comando:
+
+   ```bash
+   docker-compose logs python_query_app
+   ```
+
+   Esto te permitirá ver cualquier error o salida que la aplicación esté generando.
+
+4. **Detener los contenedores**:
+   Para detener los contenedores, utiliza el siguiente comando:
+
+   ```bash
+   docker-compose down
+   ```
+
+5. **Ejecutar el proceso ETL**:
+   Una vez que los contenedores estén corriendo, puedes ejecutar el proceso ETL que transformará los datos de PostgreSQL y los cargará en Oracle con el siguiente comando:
+
+   ```bash
+   docker-compose run etl
+   ```
+
+   Esto ejecutará el contenedor del proceso ETL y realizará la transformación y carga de datos.
+
+## Contribución
+
+Si deseas contribuir al proyecto, puedes clonar el repositorio, realizar tus cambios y hacer un pull request. Asegúrate de seguir las convenciones de estilo y de probar los cambios localmente antes de enviarlos.
+
+## Licencia
+
+Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más detalles.
+
+```
+
+### Cambios y Explicaciones:
+
+1. **Estructura del Proyecto**: He actualizado la estructura del directorio para reflejar el proceso ETL y la base de datos Oracle, además de las aplicaciones de consulta.
+2. **Descripción de los Servicios**: Se han añadido descripciones para el contenedor de Oracle y el proceso ETL.
+3. **Ejecución del Proceso ETL**: He añadido instrucciones para ejecutar el contenedor ETL que transforma y carga los datos en Oracle.
+4. **Configuración**: Se han añadido las variables de entorno necesarias para configurar la conexión a la base de datos Oracle.
+
+Este archivo README debe ofrecer una visión clara y detallada de cómo ejecutar y administrar el proyecto en su totalidad.

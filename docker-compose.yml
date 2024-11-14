@@ -1,0 +1,127 @@
+version: '3.8'
+
+x-postgres-common:
+  &postgres-common
+  image: postgres:14-alpine
+  user: postgres
+  restart: always
+  healthcheck:
+    test: 'pg_isready -U user --dbname=postgres'
+    interval: 10s
+    timeout: 5s
+    retries: 5
+
+services:
+  postgres_primary:
+    <<: *postgres-common
+    ports:
+      - 5433:5432
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_DB: postgres
+      POSTGRES_PASSWORD: password
+      POSTGRES_HOST_AUTH_METHOD: "scram-sha-256\nhost replication all 0.0.0.0/0 md5"
+      POSTGRES_INITDB_ARGS: "--auth-host=scram-sha-256"
+    command: |
+      postgres 
+      -c wal_level=replica 
+      -c hot_standby=on 
+      -c max_wal_senders=10 
+      -c max_replication_slots=10 
+      -c hot_standby_feedback=on
+    volumes:
+      - ./00_init.sql:/docker-entrypoint-initdb.d/00_init.sql
+      - ./01_init_usuarios.sql:/docker-entrypoint-initdb.d/01_init_usuarios.sql  # Agregar este volumen
+    networks:
+      - mynetwork
+
+  postgres_replica:
+    <<: *postgres-common
+    ports:
+      - 5434:5432
+    environment:
+      PGUSER: replicator
+      PGPASSWORD: replicator_password
+    command: |
+      bash -c "
+      until pg_basebackup --pgdata=/var/lib/postgresql/data -R --slot=replication_slot --host=postgres_primary --port=5432
+      do
+      echo 'Waiting for primary to connect...'
+      sleep 1s
+      done
+      echo 'Backup done, starting replica...'
+      chmod 0700 /var/lib/postgresql/data
+      postgres
+      "
+    depends_on:
+      - postgres_primary
+    networks:
+      - mynetwork
+
+  python_app:
+    build: ./python_app
+    depends_on:
+      - postgres_primary
+    environment:
+      DATABASE_HOST: postgres_primary
+      DATABASE_NAME: postgres
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+    networks:
+      - mynetwork
+
+  cpp_app:
+      build: ./app-generador-c++
+      depends_on:
+        - postgres_primary
+      environment:
+        DATABASE_HOST: postgres_primary  # Nombre del servicio PostgreSQL
+        DATABASE_USER: user
+        DATABASE_PASSWORD: password
+        DATABASE_NAME: postgres
+      networks:
+        - mynetwork
+
+  python_app2:
+    build: ./python_app_generator2
+    depends_on:
+      - postgres_primary
+    environment:
+      DATABASE_HOST: postgres_primary
+      DATABASE_NAME: postgres
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+    networks:
+      - mynetwork
+
+  postgres_query:
+    build: ./python_query_app  # Cambia la ruta de construcción a `python_query_app`
+    ports:
+      - "5000:5000"            # Expone el puerto 5000 para la aplicación web Flask
+    depends_on:
+      - postgres_primary
+    environment:
+      DATABASE_HOST: postgres_primary
+      DATABASE_NAME: postgres
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+    networks:
+      - mynetwork
+
+  python_query_app:
+    build: ./python_query_app2
+    ports:
+      - "5001:5000"  # Puerto local 5001
+    depends_on:
+      - postgres_primary
+    environment:
+      DATABASE_HOST: postgres_primary
+      DATABASE_NAME: postgres
+      DATABASE_USER: user
+      DATABASE_PASSWORD: password
+    networks:
+      - mynetwork
+
+networks:
+  mynetwork:
+    driver: bridge

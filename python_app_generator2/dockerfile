@@ -1,0 +1,12 @@
+# Usa una imagen base de Python
+FROM python:3.10-slim
+
+# Instala las dependencias necesarias
+RUN pip install psycopg2-binary
+
+# Copia el archivo de la aplicación al contenedor
+WORKDIR /app
+COPY app.py .
+
+# Ejecuta la aplicación
+CMD ["python", "app.py"]

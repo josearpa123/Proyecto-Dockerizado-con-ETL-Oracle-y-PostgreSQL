@@ -1,0 +1,22 @@
+# Usamos la imagen base de GCC para compilar C++
+FROM gcc:latest
+
+# Instalar las dependencias necesarias para compilar la aplicación C++
+RUN apt-get update && apt-get install -y \
+    libpqxx-dev \
+    libpq-dev \
+    make \
+    g++ \
+    && rm -rf /var/lib/apt/lists/*
+
+# Establecer el directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copiar el código fuente al contenedor
+COPY . /app
+
+# Compilar la aplicación
+RUN g++ -o app main.cpp -lpqxx -lpq
+
+# Comando por defecto para ejecutar la aplicación
+CMD ["./app"]
