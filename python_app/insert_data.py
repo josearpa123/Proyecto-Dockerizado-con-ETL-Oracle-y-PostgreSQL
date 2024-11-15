@@ -1,12 +1,16 @@
 import psycopg2
 import os
 from time import sleep
+import random
 
 # Parámetros de conexión desde variables de entorno
 DATABASE_HOST = os.environ.get('DATABASE_HOST', 'localhost')
 DATABASE_NAME = os.environ.get('DATABASE_NAME', 'postgres')
 DATABASE_USER = os.environ.get('DATABASE_USER', 'user')
 DATABASE_PASSWORD = os.environ.get('DATABASE_PASSWORD', 'password')
+
+# Lista de cargos para generar datos aleatorios
+cargos = ['Desarrollador', 'Analista', 'Gerente', 'Soporte Técnico', 'Consultor']
 
 # Función para conectar a la base de datos
 def connect_to_db():
@@ -41,14 +45,18 @@ def insert_data():
         """)
         conn.commit()
 
+        # Generar nombre y cargo aleatorios
+        nombre = f"Usuario_{random.randint(1000, 9999)}"
+        cargo = random.choice(cargos)
+
         # Insertar datos
         cursor.execute("""
             INSERT INTO empleados (nombre, cargo)
             VALUES (%s, %s)
-        """, ('Juan Pérez', 'Desarrollador'))
+        """, (nombre, cargo))
         conn.commit()
 
-        print("Datos insertados correctamente.")
+        print(f"Datos insertados correctamente: {nombre} - {cargo}")
     except Exception as e:
         print(f"Error al insertar datos: {e}")
     finally:
@@ -59,3 +67,4 @@ def insert_data():
 while True:
     insert_data()
     sleep(10)
+    
