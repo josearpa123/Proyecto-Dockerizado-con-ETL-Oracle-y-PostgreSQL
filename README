@@ -8,49 +8,49 @@ El proyecto tiene la siguiente estructura de directorios:
 
 ```
 .
-├── 00_init.sql                # Script de inicialización de la base de datos PostgreSQL
-├── 01_init_usuarios.sql       # Script de inicialización de usuarios en PostgreSQL
-├── app-generador              # Carpeta con la aplicación que genera datos en la base de datos PostgreSQL
+├── 00_init.sql                # Script de inicialización para PostgreSQL (base de datos primaria)
+├── 01_init_usuarios.sql       # Script para configurar usuarios en PostgreSQL
+├── app-generador              # Generador de datos en PostgreSQL (Python)
 │   ├── app.py
 │   ├── build-image.sh
 │   ├── dependencias.sh
 │   ├── Dockerfile
 │   ├── requirements.txt
 │   └── run-image.sh
-├── app-generador-c++          # Carpeta con la versión C++ para generar datos
+├── app-generador-c++          # Generador de datos en C++
 │   ├── dockerfile
 │   └── main.cpp
-├── docker-compose.yml         # Archivo de configuración de Docker Compose
-├── python_app                 # Carpeta con el contenedor que maneja la inserción de datos en PostgreSQL
-│   ├── dockerfile
-│   ├── insert_data.py
-│   └── requirements.txt
-├── python_app_generator2      # Carpeta con otra versión de la aplicación generadora de datos
-│   ├── app.py
-│   └── dockerfile
-├── python_query_app           # Carpeta con la aplicación Flask para consultar la base de datos PostgreSQL
-│   ├── app.py
-│   ├── dockerfile
-│   ├── query_data.py
-│   ├── RE
-│   ├── requirements.txt
-│   └── templates
-│       └── index.html
-├── python_query_app2          # Otra aplicación Flask para consultas PostgreSQL
-│   ├── app.py
-│   ├── dockerfile
-│   ├── query_data.py
-│   ├── requirements.txt
-│   └── templates
-│       └── index.html
-├── etl                        # Carpeta con el proceso ETL que transforma y carga los datos a Oracle
+├── docker-compose.yml         # Archivo principal de configuración para Docker Compose
+├── etl                        # Proceso ETL (Python)
 │   ├── etl_process.py
 │   ├── requirements.txt
 │   └── dockerfile
-├── oracle_db                  # Carpeta con la base de datos Oracle dockerizada
+├── oracle_db                  # Contenedor de Oracle Database
 │   ├── dockerfile
 │   └── init.sql
-└── README.md                  # Este archivo
+├── python_app                 # Aplicación para insertar datos en PostgreSQL
+│   ├── dockerfile
+│   ├── insert_data.py
+│   └── requirements.txt
+├── python_app_generator2      # Otro generador de datos en Python
+│   ├── app.py
+│   └── dockerfile
+├── python_query_app           # Aplicación Flask para consultas en PostgreSQL
+│   ├── app.py
+│   ├── dockerfile
+│   ├── query_data.py
+│   ├── requirements.txt
+│   └── templates
+│       └── index.html
+├── python_query_app2          # Segunda aplicación Flask para consultas
+│   ├── app.py
+│   ├── dockerfile
+│   ├── query_data.py
+│   ├── requirements.txt
+│   └── templates
+│       └── index.html
+└── README.md                  # Documentación del proyecto
+
 ```
 
 ### Descripción de los Servicios
