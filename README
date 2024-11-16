@@ -166,4 +166,4 @@ Este proyecto está bajo la Licencia MIT. Consulta el archivo LICENSE para más 
 3. **Ejecución del Proceso ETL**: He añadido instrucciones para ejecutar el contenedor ETL que transforma y carga los datos en Oracle.
 4. **Configuración**: Se han añadido las variables de entorno necesarias para configurar la conexión a la base de datos Oracle.
 
-Este archivo README debe ofrecer una visión clara y detallada de cómo ejecutar y administrar el proyecto en su totalidad.
+Este archivo README debe ofrecer una visión clara y detallada de cómo ejecutar y administrar el proyecto en su totalidad. Este proyecto nos ayuda a tener conocimiento sobre desarrollar un sistema dockerizado que integre un flujo de trabajo ETL entre las bases de datos PostgreSQL y Oracle
