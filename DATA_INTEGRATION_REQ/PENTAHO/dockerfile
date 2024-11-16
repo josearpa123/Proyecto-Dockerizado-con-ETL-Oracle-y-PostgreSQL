@@ -1,12 +1,14 @@
-# Usa la imagen base de Windows
-FROM mcr.microsoft.com/windows/servercore:ltsc2022
+# Utilizar una imagen base de Python
+FROM python:3.8-slim
 
-# Establece el directorio de trabajo dentro del contenedor
-WORKDIR /app
+# Establecer el directorio de trabajo en el contenedor
+WORKDIR /home/config/Proyecto-Dockerizado-con-ETL-Oracle-y-PostgreSQL/DATA_INTEGRATION_REQ/PENTAHO
 
-# Copia el archivo .bat desde el host al contenedor
-COPY ./path/to/pentaho.bat /app/pentaho.bat
+# Copiar los archivos necesarios al contenedor
+COPY . .
 
-# Establece el comando que se ejecutará cuando se inicie el contenedor
-CMD ["cmd.exe", "/c", "pentaho.bat"]
-    
+# Instalar bash si no está presente
+RUN apt-get update && apt-get install -y bash
+
+# Ejecutar el script de Python
+CMD ["python", "Rapp.py"]

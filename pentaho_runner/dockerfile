@@ -14,3 +14,4 @@ RUN chmod +x /app/run_pentaho.py
 
 # Ejecuta el script automáticamente al iniciar
 CMD ["python", "/app/run_pentaho.py"]
+

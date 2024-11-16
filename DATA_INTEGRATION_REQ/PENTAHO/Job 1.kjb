@@ -315,7 +315,7 @@
       <attributes/>
       <specification_method>filename</specification_method>
       <trans_object_id/>
-      <filename>\\wsl.localhost\Ubuntu-22.04\home\config\Proyecto-Dockerizado-con-ETL-Oracle-y-PostgreSQL\DATA_INTEGRATION_REQ\PENTAHO\Transformation 3.ktr</filename>
+      <filename>/home/config/Proyecto-Dockerizado-con-ETL-Oracle-y-PostgreSQL/DATA_INTEGRATION_REQ/PENTAHO/Transformation 3.ktr</filename>
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>
@@ -376,7 +376,7 @@
       <attributes/>
       <specification_method>filename</specification_method>
       <trans_object_id/>
-      <filename>\\wsl.localhost\Ubuntu-22.04\home\config\Proyecto-Dockerizado-con-ETL-Oracle-y-PostgreSQL\DATA_INTEGRATION_REQ\PENTAHO\Transformation 1.ktr</filename>
+      <filename>/home/config/Proyecto-Dockerizado-con-ETL-Oracle-y-PostgreSQL/DATA_INTEGRATION_REQ/PENTAHO/Transformation 1.ktr</filename>
       <transname/>
       <arg_from_previous>N</arg_from_previous>
       <params_from_previous>N</params_from_previous>

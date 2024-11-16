@@ -15,7 +15,7 @@ services:
   postgres_primary:
     <<: *postgres-common
     ports:
-      - 5433:5432
+      - 5432:5432
     environment:
       POSTGRES_USER: user
       POSTGRES_DB: postgres
@@ -38,7 +38,7 @@ services:
   postgres_replica:
     <<: *postgres-common
     ports:
-      - 5434:5432
+      - 5433:5432
     environment:
       PGUSER: replicator
       PGPASSWORD: replicator_password
@@ -122,12 +122,7 @@ services:
     networks:
       - mynetwork
 
-  pentaho-runner:
-    build:
-      context: ./DATA_INTEGRATION_REQ/PENTAHO  # Ruta a la carpeta que contiene tu Dockerfile
-    networks:
-      - mynetwork
-
+  
 
   oracle:
     image: gvenzl/oracle-free

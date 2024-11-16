@@ -496,7 +496,7 @@
     <type>POSTGRESQL</type>
     <access>Native</access>
     <database>postgres</database>
-    <port>5432</port>
+    <port>5433</port>
     <username>replicator</username>
     <password>Encrypted 726572d2f1cca91ec880bbbb18bd63c99dbdde</password>
     <servername/>
