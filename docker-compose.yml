@@ -122,7 +122,11 @@ services:
     networks:
       - mynetwork
 
-  
+  pentaho-runner:
+    build:
+      context: ./DATA_INTEGRATION_REQ/PENTAHO  # Ruta a la carpeta que contiene tu Dockerfile
+    networks:
+      - mynetwork
 
   oracle:
     image: gvenzl/oracle-free
