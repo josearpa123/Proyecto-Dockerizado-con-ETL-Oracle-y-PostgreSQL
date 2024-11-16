@@ -2,7 +2,7 @@
 FROM python:3.8-slim
 
 # Establecer el directorio de trabajo en el contenedor
-WORKDIR /home/config/Proyecto-Dockerizado-con-ETL-Oracle-y-PostgreSQL/DATA_INTEGRATION_REQ/PENTAHO
+WORKDIR /home/config/Proyecto-Dockerizado-con-ETL-Oracle-y-PostgreSQL/DATA_INTEGRATION_REQ
 
 # Copiar los archivos necesarios al contenedor
 COPY . .
