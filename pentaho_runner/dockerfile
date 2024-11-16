@@ -1,0 +1,16 @@
+FROM python:3.9-slim
+
+# Establece el directorio de trabajo
+WORKDIR /app
+
+# Copia el script Python al contenedor
+COPY run_pentaho.py /app/run_pentaho.py
+
+# Instala bash (necesario para ejecutar .sh)
+RUN apt-get update && apt-get install -y bash && apt-get clean
+
+# Establece el script como ejecutable
+RUN chmod +x /app/run_pentaho.py
+
+# Ejecuta el script automáticamente al iniciar
+CMD ["python", "/app/run_pentaho.py"]

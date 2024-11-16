@@ -1,0 +1,12 @@
+# Usa la imagen base de Windows
+FROM mcr.microsoft.com/windows/servercore:ltsc2022
+
+# Establece el directorio de trabajo dentro del contenedor
+WORKDIR /app
+
+# Copia el archivo .bat desde el host al contenedor
+COPY ./path/to/pentaho.bat /app/pentaho.bat
+
+# Establece el comando que se ejecutará cuando se inicie el contenedor
+CMD ["cmd.exe", "/c", "pentaho.bat"]
+    
